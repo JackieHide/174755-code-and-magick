@@ -59,6 +59,9 @@ var generateArray = function () {
 };
 
 var renderWizard = function (wizard) {
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template')
+                              .content
+                              .querySelector('.setup-similar-item');
   var wizardElement = similarWizardTemplate.cloneNode(true);
 
   wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
@@ -70,6 +73,8 @@ var renderWizard = function (wizard) {
 
 var renderSimilar = function () {
   var generatedArray = generateArray();
+  var fragment = document.createDocumentFragment();
+  var similarListElement = setupBlock.querySelector('.setup-similar-list');
 
   for (var i = 0; i < generatedArray.length; i++) {
     fragment.appendChild(renderWizard(generatedArray[i]));
@@ -81,11 +86,6 @@ var renderSimilar = function () {
 };
 
 var setupBlock = document.querySelector('.setup');
-var similarListElement = setupBlock.querySelector('.setup-similar-list');
-var similarWizardTemplate = document.querySelector('#similar-wizard-template')
-                              .content
-                              .querySelector('.setup-similar-item');
-var fragment = document.createDocumentFragment();
 
 setupBlock.classList.remove('hidden');
 
