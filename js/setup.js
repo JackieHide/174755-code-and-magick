@@ -39,15 +39,17 @@ var WIZARD_EYES = [
   'green',
 ];
 
+var DEFAULT_WIZARDS_LENGTH = 3;
+
 var generateRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var generateArray = function () {
-  var temporaryArray = [];
+var generateDefaultWizards = function () {
+  var defaultWizardsArray = [];
 
-  for (var i = 0; i <= 3; i++) {
-    temporaryArray.push({
+  for (var i = 0; i <= DEFAULT_WIZARDS_LENGTH; i++) {
+    defaultWizardsArray.push({
       name: WIZARD_NAMES[generateRandomNumber(0, WIZARD_NAMES.length - 1)] +
         ' ' + WIZARD_LASTNAMES[generateRandomNumber(0, WIZARD_LASTNAMES.length - 1)],
       coatColor: WIZARD_COATS[generateRandomNumber(0, WIZARD_COATS.length - 1)],
@@ -55,7 +57,7 @@ var generateArray = function () {
     });
   }
 
-  return temporaryArray;
+  return defaultWizardsArray;
 };
 
 var renderWizard = function (wizard) {
@@ -72,12 +74,12 @@ var renderWizard = function (wizard) {
 };
 
 var renderSimilar = function () {
-  var generatedArray = generateArray();
+  var defaultWizards = generateDefaultWizards();
   var fragment = document.createDocumentFragment();
   var similarListElement = setupBlock.querySelector('.setup-similar-list');
 
-  for (var i = 0; i < generatedArray.length; i++) {
-    fragment.appendChild(renderWizard(generatedArray[i]));
+  for (var i = 0; i < defaultWizards.length; i++) {
+    fragment.appendChild(renderWizard(defaultWizards[i]));
   }
 
   similarListElement.appendChild(fragment);
