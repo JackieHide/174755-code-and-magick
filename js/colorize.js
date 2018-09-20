@@ -1,11 +1,11 @@
 'use strict';
 
-window.colorize = (function () {
+(function () {
   var hex = function (x) {
     return ('0' + parseInt(x, 10).toString(16)).slice(-2);
   };
 
-  return {
+  window.colorize = {
     generateColor: function (colorsArray, currentColor) {
       var color = colorsArray[window.util.generateRandomNumber(0, colorsArray.length - 1)];
 

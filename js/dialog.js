@@ -15,13 +15,8 @@
     document.removeEventListener('keydown', onPopupEscPress);
   };
 
-  var onSetupOpenClick = function () {
-    openPopup();
-  };
-
-  var onSetupCloseClick = function () {
-    closePopup();
-  };
+  var onSetupOpenClick = openPopup;
+  var onSetupCloseClick = closePopup;
 
   var onSetupOpenEnterPress = function (evt) {
     window.util.isEnterEvent(evt, openPopup);
