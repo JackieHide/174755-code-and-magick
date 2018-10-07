@@ -1,27 +1,5 @@
 'use strict';
 (function () {
-  var WIZARD_NAMES = [
-    'Иван',
-    'Хуан Себастьян',
-    'Мария',
-    'Кристоф',
-    'Виктор',
-    'Юлия',
-    'Люпита',
-    'Вашингтон',
-  ];
-
-  var WIZARD_LASTNAMES = [
-    'да Марья',
-    'Верон',
-    'Мирабелла',
-    'Вальц',
-    'Онопко',
-    'Топольницкая',
-    'Нионго',
-    'Ирвинг',
-  ];
-
   var WIZARD_COATS = [
     'rgb(101, 137, 164)',
     'rgb(241, 43, 107)',
@@ -47,22 +25,19 @@
     '#e6e848',
   ];
 
-  var DEFAULT_WIZARDS_LENGTH = 3;
+  var setup = document.querySelector('.setup');
 
-  // генерирует массив объектов волшебников
-  var generateDefaultWizards = function () {
-    var defaultWizardsArray = [];
+  // общий обработчик ошибок xhr
+  var commonErrorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: rgba(230, 126, 24, 0.86);';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
 
-    for (var i = 0; i <= DEFAULT_WIZARDS_LENGTH; i++) {
-      defaultWizardsArray.push({
-        name: WIZARD_NAMES[window.util.generateRandomNumber(0, WIZARD_NAMES.length - 1)] +
-          ' ' + WIZARD_LASTNAMES[window.util.generateRandomNumber(0, WIZARD_LASTNAMES.length - 1)],
-        coatColor: WIZARD_COATS[window.util.generateRandomNumber(0, WIZARD_COATS.length - 1)],
-        eyesColor: WIZARD_EYES[window.util.generateRandomNumber(0, WIZARD_EYES.length - 1)],
-      });
-    }
-
-    return defaultWizardsArray;
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
   };
 
   // создает волшебника в "Похожих персонажах"
@@ -73,25 +48,27 @@
     var wizardElement = similarWizardTemplate.cloneNode(true);
 
     wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
 
     return wizardElement;
   };
 
   // создает четырех волшебников в "Похожих персонажах"
   var renderSimilar = function () {
-    var defaultWizards = generateDefaultWizards();
     var fragment = document.createDocumentFragment();
     var similarListElement = setup.querySelector('.setup-similar-list');
 
-    for (var i = 0; i < defaultWizards.length; i++) {
-      fragment.appendChild(renderWizard(defaultWizards[i]));
-    }
+    var successHandler = function (wizards) {
+      for (var i = 0; i < 4; i++) {
+        fragment.appendChild(renderWizard(wizards[i]));
+      }
+      similarListElement.appendChild(fragment);
 
-    similarListElement.appendChild(fragment);
+      document.querySelector('.setup-similar').classList.remove('hidden');
+    };
 
-    document.querySelector('.setup-similar').classList.remove('hidden');
+    window.backend.load(successHandler, commonErrorHandler);
   };
 
   // события для кастомизации персонажа
@@ -142,8 +119,20 @@
     wizardFireballElement.addEventListener('click', onWizardFireballClick);
   };
 
-  var setup = document.querySelector('.setup');
+  var initForm = function () {
+    var form = setup.querySelector('.setup-wizard-form');
+
+    var successHandler = function () {
+      setup.classList.add('hidden');
+    };
+
+    form.addEventListener('submit', function (evt) {
+      window.backend.save(new FormData(form), successHandler, commonErrorHandler);
+      evt.preventDefault();
+    });
+  };
 
   renderSimilar();
+  initForm();
   initWizardSetup();
 })();
